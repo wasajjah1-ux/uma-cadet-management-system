@@ -88,24 +88,19 @@ th{background:var(--primary);color:#fff;}
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-  <div id="loginScreen" class="login-screen">
-    <div class="login-box">
-      <h1>UMA Kabamba</h1>
-      <p>Officer Cadet Management System</p>
-      
-      <div class="restriction-note">
-        Data Entry Restricted to<br>
-        <strong>Writing Team / Production ONLY</strong>
-      </div>
-
-      <input type="text" id="loginUser" value="Wasajja" placeholder="Username">
-      <input type="password" id="loginPass" value="Ug1491" placeholder="Password">
-      <button type="button" onclick="doLogin()">Login</button>
-      
-      <p class="login-hint">Call +256393252929 for queries</p>
-      <p class="made-by">Made by 2Lt Herbert Wasajja for UMAK only</p>
-    </div>
+<!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <h1>UMA Kabamba</h1>
+    <p>Officer Cadet Management System</p>
+    <div class="restriction-note">Data Entry Restricted to<br><strong>Writing Team / Production ONLY</strong></div>
+    <input type="text" id="loginUser" value="Wasajja" placeholder="Username">
+    <input type="password" id="loginPass" value="Ug1491" placeholder="Password">
+    <button type="button" onclick="doLogin()">Login</button>
+    <p style="margin-top:12px;font-size:.85rem;color:#888;">Default: Wasajja / Ug1491</p>
+    <p class="made-by">Made by 2Lt Herbert Wasajja for UMAK only</p>
+  </div>
+</div>
 
 <!-- MAIN APP -->
 <div id="mainApp" class="hidden">
