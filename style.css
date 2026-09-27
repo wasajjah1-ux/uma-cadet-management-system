@@ -1,0 +1,477 @@
+/* ======================================================
+   UMA KABAMBA - FINAL style.css
+   With background photo support for login page
+   Made by 2Lt Herbert Wasajja for UMAK only
+   ====================================================== */
+
+:root {
+  --primary: #1a472a;
+  --secondary: #2d5a3d;
+  --accent: #c9a227;
+  --danger: #b91c1c;
+  --success: #15803d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #e8f0e8;
+  color: #222;
+  line-height: 1.5;
+}
+
+/* ==================== LOGIN SCREEN ==================== */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Background photo - place kabamba-bg.jpg in the same folder */
+  background: linear-gradient(rgba(26, 71, 42, 0.75), rgba(26, 71, 42, 0.85)),
+              url('kabamba-bg.jpg') center center / cover no-repeat;
+  background-color: #1a472a; /* fallback if image is missing */
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.97);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box h1 {
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+}
+
+.login-box p {
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.restriction-note {
+  background: #fef3c7;
+  border: 2px solid #ca8a04;
+  color: #92400e;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 12px 0 18px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.login-box button:hover {
+  background: var(--secondary);
+}
+
+.login-hint {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.made-by {
+  margin-top: 18px;
+  font-size: 0.8rem;
+  color: #555;
+  font-style: italic;
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  background: var(--primary);
+  color: white;
+  padding: 12px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.header small {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==================== NAVIGATION ==================== */
+.nav {
+  background: var(--secondary);
+  padding: 0 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.nav button {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-bottom: 3px solid transparent;
+}
+
+.nav button:hover,
+.nav button.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-bottom-color: var(--accent);
+}
+
+/* ==================== LAYOUT ==================== */
+.container {
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  color: var(--primary);
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+
+.card h3 {
+  color: var(--primary);
+  margin: 20px 0 10px;
+}
+
+/* Restriction Banner */
+.restriction-banner {
+  background: #fef3c7;
+  border: 1px solid #ca8a04;
+  color: #92400e;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-box.blue { background: #dbeafe; }
+.stat-box.yellow { background: #fef3c7; }
+.stat-box.green { background: #dcfce7; }
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.welcome-text {
+  margin-top: 15px;
+  color: #555;
+}
+
+/* Photo section */
+.photo-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8faf8;
+  border-radius: 8px;
+}
+
+.photo-preview {
+  width: 120px;
+  height: 140px;
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#photoPlaceholder {
+  color: #999;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Forms */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 9px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-actions {
+  margin-top: 15px;
+}
+
+.inline-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.btn {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 3px;
+  font-size: 0.9rem;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-secondary { background: #64748b; color: white; }
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Tables */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+th {
+  background: var(--primary);
+  color: white;
+}
+
+tr:hover {
+  background: #f0fdf4;
+}
+
+.cadet-photo-thumb {
+  width: 45px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Search */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 15px;
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* Alerts */
+.alert {
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.alert-success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-year1 { background: #dbeafe; color: #1e40af; }
+.badge-year2 { background: #fef3c7; color: #92400e; }
+.badge-year3 { background: #dcfce7; color: #166534; }
+
+/* Tabs */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Print */
+.print-area {
+  background: white;
+  padding: 30px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .photo-section {
+    flex-direction: column;
+  }
+  .nav button {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  .login-box {
+    margin: 15px;
+    padding: 25px;
+  }
+}
