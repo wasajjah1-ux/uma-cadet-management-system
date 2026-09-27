@@ -89,18 +89,37 @@ th{background:var(--primary);color:#fff;}
 <body>
 
 <!-- LOGIN -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-box">
-    <h1>UMA Kabamba</h1>
-    <p>Officer Cadet Management System</p>
-    <div class="restriction-note">Data Entry Restricted to<br><strong>Writing Team / Production ONLY</strong></div>
-    <input type="text" id="loginUser" value="Wasajja" placeholder="Username">
-    <input type="password" id="loginPass" value="Ug1491" placeholder="Password">
-    <button type="button" onclick="doLogin()">Login</button>
-    <p style="margin-top:12px;font-size:.85rem;color:#888;">Email wasajjah1@gmail.com for help</p>
-    <p class="made-by">Made by 2Lt Herbert Wasajja for UMAK only</p>
-  </div>
-</div>
+<form action="/your-login-endpoint" method="POST">
+  <!-- Fake hidden inputs to trick and block aggressive browser autofill -->
+  <input type="text" style="display:none;" tabIndex="-1" />
+  <input type="password" style="display:none;" tabIndex="-1" />
+
+  <!-- Username Field -->
+  <label for="username">Username:</label>
+  <input 
+    type="text" 
+    id="username" 
+    name="username" 
+    autocomplete="new-password" 
+    pattern="^Wasajja$" 
+    title="Please enter the correct username." 
+    required
+  >
+
+  <!-- Password Field -->
+  <label for="password">Password:</label>
+  <input 
+    type="password" 
+    id="password" 
+    name="password" 
+    autocomplete="new-password" 
+    pattern="^Ug1491$" 
+    title="Please enter the correct password." 
+    required
+  >
+
+  <button type="submit">Log In</button>
+</form>
 
 <!-- MAIN APP -->
 <div id="mainApp" class="hidden">
