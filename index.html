@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMA Kabamba - Cadet Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <h1>UMA Kabamba</h1>
+      <p>Officer Cadet Management System</p>
+
+      <div class="login-tabs">
+        <button class="active" id="tabAdmin" onclick="switchLogin('admin')">Admin Login</button>
+        <button id="tabStudent" onclick="switchLogin('student')">Student Login</button>
+      </div>
+
+      <div id="adminLogin">
+        <div class="restriction-note">
+          Data Entry Restricted to<br>
+          <strong>Writing Team / Production ONLY</strong>
+        </div>
+        <input type="text" id="loginUser" value="Wasajja" placeholder="Username">
+        <input type="password" id="loginPass" value="Ug1491" placeholder="Password">
+        <button type="button" onclick="doAdminLogin()">Admin Login</button>
+        <p class="login-hint">Default: Wasajja / Ug1491</p>
+      </div>
+
+      <div id="studentLogin" class="hidden">
+        <p class="student-hint">
+          Students: Enter username (e.g. wasajja@umak)<br>
+          and your Army Number as password
+        </p>
+        <input type="text" id="stuUser" placeholder="Username (e.g. wasajja@umak)">
+        <input type="password" id="stuPass" placeholder="Army / Service Number">
+        <button type="button" onclick="doStudentLogin()">Student Login</button>
+        <p class="login-hint">Example: wasajja@umak | UG/2024/001</p>
+      </div>
+
+      <p class="made-by">Made by 2Lt Herbert Wasajja for UMAK only</p>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN APP ==================== -->
+  <div id="mainApp" class="hidden">
+    <div class="header">
+      <div>
+        <h1>🇺🇬 Uganda Military Academy – Kabamba</h1>
+        <small>Officer Cadet Records System (Admin)</small>
+      </div>
+      <div class="header-right">
+        <span id="userDisplay"></span>
+        <button class="btn btn-secondary" onclick="showTab('settings')">Settings</button>
+        <button class="btn btn-danger" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="nav" id="mainNav" style="display:none;">
+      <button onclick="showTab('dashboard')">Dashboard</button>
+      <button class="active" onclick="showTab('cadets')">Cadets</button>
+      <button onclick="showTab('subjects')">Subjects</button>
+      <button onclick="showTab('scores')">Scores & Exams</button>
+      <button onclick="showTab('exercises')">Field Exercises</button>
+      <button onclick="showTab('alumni')">Alumni</button>
+      <button onclick="showTab('updates')">Academy Updates</button>
+      <button onclick="showTab('search')">Search</button>
+      <button onclick="showTab('settings')">Settings</button>
+    </div>
+
+    <div class="container">
+
+      <!-- WELCOME -->
+      <div id="welcome" class="tab-content active page-welcome">
+        <div class="welcome-page">
+          <div class="welcome-hero">
+            <h1>Welcome to Uganda Military Academy – Kabamba</h1>
+            <p>Officer Cadet Management System</p>
+          </div>
+
+          <div class="officer-stage" id="officerStage">
+            <div class="officer-card-anim" id="cmdt">
+              <img src="commandant.jpg" alt="Commandant" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=Commandant'">
+              <h3>Brig Gen Saad Katemba</h3>
+              <div class="rank">Commandant</div>
+            </div>
+            <div class="officer-card-anim" id="ci">
+              <img src="chief-instructor.jpg" alt="Chief Instructor" onerror="this.src='https://via.placeholder.com/130x150/2d5a3d/ffffff?text=Chief+Instructor'">
+              <h3>Colonel Mark Ben Mugarura</h3>
+              <div class="rank">Chief Instructor</div>
+            </div>
+            <div class="officer-card-anim" id="admin">
+              <img src="admin.jpg" alt="Admin" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=Admin'">
+              <h3>Admin Officer</h3>
+              <div class="rank">Administration</div>
+            </div>
+            <div class="officer-card-anim" id="cc">
+              <img src="course-coordinator.jpg" alt="CC" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=CC'">
+              <h3>Course Coordinator</h3>
+              <div class="rank">Course Coordination</div>
+            </div>
+            <div class="officer-card-anim" id="io">
+              <img src="io.jpg" alt="IO" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=IO'">
+              <h3>Intelligence Officer</h3>
+              <div class="rank">IO</div>
+            </div>
+            <div class="officer-card-anim" id="pc">
+              <img src="pc.jpg" alt="PC" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=PC'">
+              <h3>Platoon Commanders</h3>
+              <div class="rank">PC</div>
+            </div>
+            <div class="officer-card-anim" id="asm">
+              <img src="asm.jpg" alt="ASM" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=ASM'">
+              <h3>Academy Sergeant Major</h3>
+              <div class="rank">ASM</div>
+            </div>
+            <div class="officer-card-anim" id="fin">
+              <img src="finance.jpg" alt="Finance" onerror="this.src='https://via.placeholder.com/130x150/1a472a/ffffff?text=Finance'">
+              <h3>Finance Officer</h3>
+              <div class="rank">Finance</div>
+            </div>
+          </div>
+
+          <div class="core-values" id="coreValues">
+            <h2>Our Core Values</h2>
+            <div class="values-grid">
+              <div class="value-item">Discipline</div>
+              <div class="value-item">Integrity</div>
+              <div class="value-item">Loyalty</div>
+              <div class="value-item">Courage</div>
+              <div class="value-item">Excellence</div>
+              <div class="value-item">Professionalism</div>
+            </div>
+          </div>
+
+          <button class="enter-btn" onclick="enterSystem()">Enter the System</button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="tab-content page-dashboard">
+        <div class="card">
+          <h2>Dashboard</h2>
+          <div class="restriction-banner">⚠️ Data Entry Restricted to Writing Team / Production ONLY</div>
+          <div class="stats">
+            <div class="stat-box blue"><div class="stat-number" id="statCadets">0</div><div>Total Cadets</div></div>
+            <div class="stat-box yellow"><div class="stat-number" id="statSubjects">0</div><div>Subjects</div></div>
+            <div class="stat-box green"><div class="stat-number" id="statExercises">0</div><div>Field Exercises</div></div>
+            <div class="stat-box blue"><div class="stat-number" id="statAlumni">0</div><div>Alumni</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CADETS -->
+      <div id="cadets" class="tab-content page-cadets">
+        <div id="categoryView">
+          <div class="card">
+            <h2>Select Cadet Category</h2>
+            <div class="category-grid">
+              <div class="category-card" onclick="openCategory('1')"><h3>Year 1</h3><p>Bachelor of Defense Studies</p></div>
+              <div class="category-card" onclick="openCategory('2')"><h3>Year 2</h3><p>Bachelor of Defense Studies</p></div>
+              <div class="category-card" onclick="openCategory('3')"><h3>Year 3</h3><p>Bachelor of Defense Studies</p></div>
+              <div class="category-card" onclick="openCategory('Professional')"><h3>Professionals</h3><p>Short Cadet Course</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="categoryDetail" class="hidden">
+          <div class="card">
+            <div class="category-header">
+              <h2 id="categoryTitle">Year 1 Cadets</h2>
+              <button class="btn btn-secondary" onclick="backToCategories()">← Back to Categories</button>
+            </div>
+            <div class="restriction-banner">⚠️ Only Writing Team / Production may enter or edit data</div>
+            <div id="cadetAlert"></div>
+
+            <div class="nav-buttons">
+              <button class="btn btn-outline" onclick="prevCadet()">← Previous</button>
+              <button class="btn btn-outline" onclick="nextCadet()">Next →</button>
+              <button class="btn btn-primary" onclick="showAddForm()">+ Add New Cadet</button>
+            </div>
+
+            <form id="cadetForm" onsubmit="saveCadet(event)" class="hidden">
+              <input type="hidden" id="cadetId">
+              <div class="photo-section">
+                <div class="photo-preview">
+                  <img id="photoPreview" style="display:none;">
+                  <div id="photoPlaceholder">No Photo</div>
+                </div>
+                <div>
+                  <label>Cadet Photo</label><br>
+                  <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(event)">
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group"><label>Service Number *</label><input id="serviceNo" required></div>
+                <div class="form-group"><label>Full Name *</label><input id="fullName" required></div>
+                <div class="form-group"><label>Rank</label><input id="rank" value="O/Cdt" readonly></div>
+                <div class="form-group"><label>Sex *</label><select id="sex" required><option>Male</option><option>Female</option></select></div>
+                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob"></div>
+                <div class="form-group"><label>Age</label><input type="number" id="age"></div>
+                <div class="form-group"><label>Education</label><input id="education"></div>
+                <div class="form-group"><label>Next of Kin</label><input id="nextOfKin"></div>
+                <div class="form-group"><label>Company</label><input id="company"></div>
+                <div class="form-group"><label>Platoon</label><input id="platoon"></div>
+                <div class="form-group"><label>Section</label><input id="section"></div>
+                <div class="form-group"><label>PC Rank</label><input id="pcRank"></div>
+                <div class="form-group"><label>PC Name</label><input id="pcName"></div>
+                <div class="form-group"><label>Intake</label><select id="intake"><option value="06">06</option><option value="07">07</option><option value="08">08</option></select></div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="cadetSaveBtn">Save Cadet</button>
+                <button type="button" class="btn btn-secondary" onclick="hideAddForm()">Cancel</button>
+              </div>
+            </form>
+
+            <div id="cadetListArea">
+              <h3 class="section-title">Cadets in this Category</h3>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr><th>Photo</th><th>Service No</th><th>Name</th><th>Company</th><th>Entered By</th><th>Actions</th></tr>
+                  </thead>
+                  <tbody id="cadetTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBJECTS -->
+      <div id="subjects" class="tab-content page-subjects">
+        <div class="card">
+          <h2>Subjects</h2>
+          <div id="subjectAlert"></div>
+          <form id="subjectForm" onsubmit="saveSubject(event)" class="inline-form">
+            <input type="hidden" id="subjectId">
+            <div class="form-group" style="flex:1;">
+              <label>Subject Name</label>
+              <input id="subjectName" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="subjectSaveBtn">Add Subject</button>
+            <button type="button" class="btn btn-secondary" onclick="resetSubjectForm()">Clear</button>
+          </form>
+          <table>
+            <thead><tr><th>#</th><th>Subject</th><th>Actions</th></tr></thead>
+            <tbody id="subjectTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SCORES -->
+      <div id="scores" class="tab-content page-scores">
+        <div class="card">
+          <h2>Scores & Exams</h2>
+          <div id="scoreAlert"></div>
+          <form id="scoreForm" onsubmit="saveScore(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Service Number *</label>
+                <input id="scoreServiceNo" required list="cadetList" onchange="loadCadetName()">
+                <datalist id="cadetList"></datalist>
+              </div>
+              <div class="form-group"><label>Cadet Name</label><input id="scoreCadetName" readonly></div>
+              <div class="form-group"><label>Subject *</label><select id="scoreSubject" required></select></div>
+              <div class="form-group">
+                <label>Exam Type *</label>
+                <select id="examType" required>
+                  <option>Weekly Test 1</option><option>Weekly Test 2</option><option>Weekly Test 3</option>
+                  <option>Monthly Test</option><option>End of Phase Exam</option>
+                  <option>End of Phase Assessment</option><option>End of Course Exam</option><option>Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Marks *</label><input type="number" id="scoreMarks" required min="0" max="100"></div>
+              <div class="form-group"><label>Max Marks</label><input type="number" id="scoreMax" value="100"></div>
+              <div class="form-group"><label>Date</label><input type="date" id="scoreDate"></div>
+              <div class="form-group"><label>Remarks</label><input id="scoreRemarks"></div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Score</button>
+              <button type="button" class="btn btn-secondary" onclick="document.getElementById('scoreForm').reset()">Clear</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <h2>All Scores</h2>
+          <div class="search-bar">
+            <input type="text" id="scoreFilter" placeholder="Filter..." oninput="renderScores()">
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Service No</th><th>Name</th><th>Subject</th><th>Exam</th><th>Score</th><th>Date</th><th>Action</th></tr>
+              </thead>
+              <tbody id="scoreTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIELD EXERCISES -->
+      <div id="exercises" class="tab-content page-exercises">
+        <div class="card">
+          <h2>Field Exercises</h2>
+          <div id="exerciseAlert"></div>
+          <form id="exerciseForm" onsubmit="saveExercise(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Service Number *</label>
+                <input id="exServiceNo" required list="cadetList2" onchange="loadCadetNameEx()">
+                <datalist id="cadetList2"></datalist>
+              </div>
+              <div class="form-group"><label>Cadet Name</label><input id="exCadetName" readonly></div>
+              <div class="form-group"><label>Exercise Name *</label><input id="exName" required></div>
+              <div class="form-group"><label>Score *</label><input id="exScore" required></div>
+              <div class="form-group"><label>Date</label><input type="date" id="exDate"></div>
+              <div class="form-group"><label>Remarks</label><input id="exRemarks"></div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Exercise</button>
+              <button type="button" class="btn btn-secondary" onclick="document.getElementById('exerciseForm').reset()">Clear</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <h2>All Field Exercises</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Service No</th><th>Name</th><th>Exercise</th><th>Score</th><th>Date</th><th>Action</th></tr>
+              </thead>
+              <tbody id="exerciseTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ALUMNI ==================== -->
+      <div id="alumni" class="tab-content page-alumni">
+        <div class="card">
+          <h2>Alumni – Commissioned Officers</h2>
+          <p>These are Officer Cadets who have successfully commissioned from Uganda Military Academy – Kabamba.</p>
+          <div id="alumniAlert"></div>
+
+          <div class="nav-buttons">
+            <button class="btn btn-outline" onclick="prevAlumni()">← Previous</button>
+            <button class="btn btn-outline" onclick="nextAlumni()">Next →</button>
+            <button class="btn btn-primary" onclick="showAlumniForm()">+ Create New Alumni</button>
+          </div>
+
+          <form id="alumniForm" onsubmit="saveAlumni(event)" class="hidden">
+            <input type="hidden" id="alumniId">
+            <div class="form-grid">
+              <div class="form-group"><label>Service Number *</label><input id="alumniServiceNo" required></div>
+              <div class="form-group"><label>Full Name *</label><input id="alumniFullName" required></div>
+              <div class="form-group"><label>Rank at Commission *</label><input id="alumniRank" required placeholder="e.g. 2Lt"></div>
+              <div class="form-group"><label>Date of Commission *</label><input type="date" id="alumniCommissionDate" required></div>
+              <div class="form-group"><label>Remarks</label><input id="alumniRemarks" placeholder="Optional notes"></div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="alumniSaveBtn">Save Alumni</button>
+              <button type="button" class="btn btn-secondary" onclick="hideAlumniForm()">Cancel</button>
+            </div>
+          </form>
+
+          <div class="search-bar" style="margin-top:20px;">
+            <input type="text" id="alumniSearch" placeholder="Search by Service No or Name..." oninput="renderAlumni()">
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Service No</th>
+                  <th>Full Name</th>
+                  <th>Rank</th>
+                  <th>Date of Commission</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="alumniTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACADEMY UPDATES -->
+      <div id="updates" class="tab-content page-updates">
+        <div class="card">
+          <h2>Academy Updates / News</h2>
+          <p>Post updates that students will see when they login.</p>
+          <div id="updateAlert"></div>
+          <form onsubmit="saveUpdate(event)">
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Title *</label>
+              <input id="updateTitle" required placeholder="e.g. End of Phase Exam Timetable">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Message *</label>
+              <textarea id="updateMessage" rows="4" required placeholder="Write the update here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Update</button>
+          </form>
+          <hr>
+          <h3>Current Updates</h3>
+          <div id="adminUpdatesList"></div>
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <div id="search" class="tab-content page-search">
+        <div class="card">
+          <h2>Search Cadet – Full Record</h2>
+          <div class="search-bar">
+            <input type="text" id="searchServiceNo" placeholder="Enter Service Number...">
+            <button class="btn btn-primary" onclick="searchCadet()">Search</button>
+          </div>
+          <div id="searchResult"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="settings" class="tab-content page-settings">
+        <div class="card">
+          <h2>Settings</h2>
+          <button class="btn btn-success" onclick="exportData()">Export All Cadets to Excel (CSV)</button>
+          <br><br>
+          <button class="btn btn-success" onclick="exportAlumni()">Export Alumni to Excel (CSV)</button>
+          <br><br>
+          <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== STUDENT PORTAL ==================== -->
+  <div id="studentApp" class="hidden page-student">
+    <div class="header">
+      <div>
+        <h1>🇺🇬 UMA Kabamba – Student Portal</h1>
+        <small>My Results & Academy Updates</small>
+      </div>
+      <div class="header-right">
+        <span id="stuDisplay"></span>
+        <button class="btn btn-danger" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="container" style="margin-top:20px;">
+      <div class="student-header">
+        <h2 id="stuWelcome">Welcome Cadet</h2>
+        <p id="stuServiceNo"></p>
+      </div>
+
+      <div class="card">
+        <h2>Academy Updates</h2>
+        <div id="studentUpdatesList">
+          <p>No updates at the moment.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>My Academic Results</h2>
+        <div id="studentScores">
+          <p>No scores recorded yet.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>My Field Exercises</h2>
+        <div id="studentExercises">
+          <p>No field exercises recorded yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="printArea" class="print-area hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
