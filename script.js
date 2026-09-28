@@ -1,6 +1,6 @@
 /* ============================================
    UMA Kabamba – Cadet Management System
-   Complete JavaScript
+   Complete JavaScript (Final Version)
    ============================================ */
 
 const DEFAULT_USER = "Wasajja";
@@ -12,6 +12,7 @@ let currentCadetIndex = 0;
 let currentAlumniIndex = 0;
 let currentUser = DEFAULT_USER;
 let currentStudentSN = "";
+let updatePhotoData = "";
 
 /* ==================== LOGIN ==================== */
 function switchLogin(type) {
@@ -24,8 +25,9 @@ function switchLogin(type) {
 function doAdminLogin() {
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
+  const saved = getCredentials();
 
-  if (username === DEFAULT_USER && password === DEFAULT_PASS) {
+  if (username === saved.user && password === saved.pass) {
     currentUser = username;
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("mainApp").classList.remove("hidden");
@@ -33,7 +35,7 @@ function doAdminLogin() {
     initApp();
     startOfficerAnimation();
   } else {
-    alert("Wrong Admin username or password!\n\nUse:\nUsername: Wasajja\nPassword: Ug1491");
+    alert("Wrong username or password!\n\nDefault:\nUsername: Wasajja\nPassword: Ug1491");
   }
 }
 
@@ -56,7 +58,7 @@ function doStudentLogin() {
   }
 
   if (!found) {
-    alert("Army Number not found in the system.\n\nPlease check your Service Number or contact the Writing Team.");
+    alert("Army Number not found.\nContact the Writing Team for help.");
     return;
   }
 
@@ -67,8 +69,7 @@ function doStudentLogin() {
   document.getElementById("studentApp").classList.remove("hidden");
   document.getElementById("stuDisplay").textContent = "Student: " + found.fullName;
   document.getElementById("stuWelcome").textContent = "Welcome, " + found.fullName;
-  document.getElementById("stuServiceNo").textContent =
-    "Service No: " + found.serviceNo + " | " + (found.courseCategory || "");
+  document.getElementById("stuServiceNo").textContent = "Service No: " + found.serviceNo + " | " + (found.courseCategory || "");
 
   loadStudentData(found.serviceNo);
 }
@@ -84,66 +85,104 @@ function doLogout() {
   currentStudentSN = "";
 }
 
+/* ==================== CREDENTIALS ==================== */
+function getCredentials() {
+  try {
+    const c = JSON.parse(localStorage.getItem("uma_credentials"));
+    if (c && c.user && c.pass) return c;
+  } catch (e) {}
+  return { user: DEFAULT_USER, pass: DEFAULT_PASS };
+}
+
+function changeCredentials() {
+  const curr = document.getElementById("currPass").value;
+  const newUser = document.getElementById("newUser").value.trim();
+  const newPass = document.getElementById("newPass").value;
+  const confirm = document.getElementById("confirmPass").value;
+  const saved = getCredentials();
+
+  if (curr !== saved.pass) {
+    showAlert("credAlert", "Current password is wrong!", "error");
+    return;
+  }
+  if (!newUser || !newPass) {
+    showAlert("credAlert", "Enter new username and password", "error");
+    return;
+  }
+  if (newPass !== confirm) {
+    showAlert("credAlert", "New passwords do not match!", "error");
+    return;
+  }
+
+  localStorage.setItem("uma_credentials", JSON.stringify({ user: newUser, pass: newPass }));
+  currentUser = newUser;
+  document.getElementById("userDisplay").textContent = "Logged in as: " + newUser;
+  showAlert("credAlert", "Credentials updated successfully!", "success");
+  document.getElementById("currPass").value = "";
+  document.getElementById("newUser").value = "";
+  document.getElementById("newPass").value = "";
+  document.getElementById("confirmPass").value = "";
+}
+
+/* ==================== THEMES ==================== */
+function setTheme(theme) {
+  document.body.classList.remove("theme-dark", "theme-blue", "theme-brown");
+  if (theme !== "green") {
+    document.body.classList.add("theme-" + theme);
+  }
+  localStorage.setItem("uma_theme", theme);
+  alert("Background theme changed to " + theme.toUpperCase());
+}
+
+function loadTheme() {
+  const t = localStorage.getItem("uma_theme") || "green";
+  if (t !== "green") document.body.classList.add("theme-" + t);
+}
+
 /* ==================== DATA HELPERS ==================== */
 function getCadets() {
   try { return JSON.parse(localStorage.getItem("uma_cadets") || "[]"); }
   catch (e) { return []; }
 }
-function saveCadets(data) {
-  localStorage.setItem("uma_cadets", JSON.stringify(data));
-}
+function saveCadets(data) { localStorage.setItem("uma_cadets", JSON.stringify(data)); }
 
 function getSubjects() {
   try {
     let s = JSON.parse(localStorage.getItem("uma_subjects") || "null");
     if (!s) {
-      s = [
-        "Political Education", "Skills at Arms", "IPB", "Tactics", "Coins",
-        "Military Law", "Military Intelligence", "Map Using", "Leadership",
-        "Drill", "Physical Training", "Field Craft", "Battle Craft"
-      ];
+      s = ["Political Education","Skills at Arms","IPB","Tactics","Coins","Military Law","Military Intelligence","Map Using","Leadership","Drill","Physical Training","Field Craft","Battle Craft"];
       localStorage.setItem("uma_subjects", JSON.stringify(s));
     }
     return s;
   } catch (e) { return []; }
 }
-function saveSubjects(data) {
-  localStorage.setItem("uma_subjects", JSON.stringify(data));
-}
+function saveSubjects(data) { localStorage.setItem("uma_subjects", JSON.stringify(data)); }
 
 function getScores() {
   try { return JSON.parse(localStorage.getItem("uma_scores") || "[]"); }
   catch (e) { return []; }
 }
-function saveScores(data) {
-  localStorage.setItem("uma_scores", JSON.stringify(data));
-}
+function saveScores(data) { localStorage.setItem("uma_scores", JSON.stringify(data)); }
 
 function getExercises() {
   try { return JSON.parse(localStorage.getItem("uma_exercises") || "[]"); }
   catch (e) { return []; }
 }
-function saveExercises(data) {
-  localStorage.setItem("uma_exercises", JSON.stringify(data));
-}
+function saveExercises(data) { localStorage.setItem("uma_exercises", JSON.stringify(data)); }
 
 function getAlumni() {
   try { return JSON.parse(localStorage.getItem("uma_alumni") || "[]"); }
   catch (e) { return []; }
 }
-function saveAlumniData(data) {
-  localStorage.setItem("uma_alumni", JSON.stringify(data));
-}
+function saveAlumniData(data) { localStorage.setItem("uma_alumni", JSON.stringify(data)); }
 
 function getUpdates() {
   try { return JSON.parse(localStorage.getItem("uma_updates") || "[]"); }
   catch (e) { return []; }
 }
-function saveUpdates(data) {
-  localStorage.setItem("uma_updates", JSON.stringify(data));
-}
+function saveUpdates(data) { localStorage.setItem("uma_updates", JSON.stringify(data)); }
 
-/* ==================== INIT & SAMPLE DATA ==================== */
+/* ==================== SAMPLE DATA ==================== */
 function loadSampleData() {
   if (getCadets().length > 0) return;
 
@@ -171,39 +210,30 @@ function loadSampleData() {
   ];
   saveCadets(sample);
 
-  const sampleScores = [
+  saveScores([
     {id:"s1",serviceNo:"UG/2024/001",cadetName:"Okello David",subject:"Political Education",examType:"Weekly Test 1",marks:"78",max:"100",date:"2025-09-10",remarks:"Good"},
     {id:"s2",serviceNo:"UG/2024/001",cadetName:"Okello David",subject:"Tactics",examType:"Monthly Test",marks:"85",max:"100",date:"2025-09-15",remarks:"Excellent"},
     {id:"s3",serviceNo:"UG/2023/015",cadetName:"Mugisha Brian",subject:"Skills at Arms",examType:"End of Phase Exam",marks:"72",max:"100",date:"2025-08-20",remarks:""},
     {id:"s4",serviceNo:"UG/2022/030",cadetName:"Ssekandi Mark",subject:"Military Law",examType:"End of Course Exam",marks:"88",max:"100",date:"2025-07-30",remarks:"Outstanding"},
-    {id:"s5",serviceNo:"UG/2024/P01",cadetName:"Okello James",subject:"Map Using",examType:"Weekly Test 2",marks:"81",max:"100",date:"2025-09-12",remarks:"Very Good"},
-    {id:"s6",serviceNo:"UG/2024/002",cadetName:"Nabukenya Sarah",subject:"Leadership",examType:"Monthly Test",marks:"90",max:"100",date:"2025-09-18",remarks:"Excellent"},
-    {id:"s7",serviceNo:"UG/2023/016",cadetName:"Achieng Faith",subject:"IPB",examType:"Weekly Test 1",marks:"76",max:"100",date:"2025-09-05",remarks:""},
-    {id:"s8",serviceNo:"UG/2022/031",cadetName:"Nalukenge Grace",subject:"Military Intelligence",examType:"End of Phase Assessment",marks:"84",max:"100",date:"2025-08-25",remarks:"Good"},
-    {id:"s9",serviceNo:"UG/2024/P02",cadetName:"Nakimuli Rose",subject:"Drill",examType:"Weekly Test 3",marks:"79",max:"100",date:"2025-09-20",remarks:""},
-    {id:"s10",serviceNo:"UG/2024/003",cadetName:"Kizza Joseph",subject:"Field Craft",examType:"Monthly Test",marks:"83",max:"100",date:"2025-09-22",remarks:"Very Good"}
-  ];
-  saveScores(sampleScores);
+    {id:"s5",serviceNo:"UG/2024/P01",cadetName:"Okello James",subject:"Map Using",examType:"Weekly Test 2",marks:"81",max:"100",date:"2025-09-12",remarks:"Very Good"}
+  ]);
 
-  const sampleEx = [
+  saveExercises([
     {id:"e1",serviceNo:"UG/2024/001",cadetName:"Okello David",name:"Exercise Lion",score:"Good",date:"2025-09-05",remarks:"Team leader"},
     {id:"e2",serviceNo:"UG/2023/015",cadetName:"Mugisha Brian",name:"Battle Craft",score:"Very Good",date:"2025-08-12",remarks:""},
-    {id:"e3",serviceNo:"UG/2022/030",cadetName:"Ssekandi Mark",name:"Field Craft",score:"Excellent",date:"2025-07-18",remarks:"Best in platoon"},
-    {id:"e4",serviceNo:"UG/2024/P01",cadetName:"Okello James",name:"Night Navigation",score:"Good",date:"2025-09-08",remarks:""},
-    {id:"e5",serviceNo:"UG/2024/002",cadetName:"Nabukenya Sarah",name:"Section Attack",score:"Very Good",date:"2025-09-14",remarks:""}
-  ];
-  saveExercises(sampleEx);
+    {id:"e3",serviceNo:"UG/2022/030",cadetName:"Ssekandi Mark",name:"Field Craft",score:"Excellent",date:"2025-07-18",remarks:"Best in platoon"}
+  ]);
 
-  const sampleAlumni = [
+  saveAlumniData([
     {id:"a1",serviceNo:"UG/2018/001",fullName:"Lt Okello Michael",rank:"Lt",commissionDate:"2021-06-15",remarks:"Commissioned with distinction",enteredBy:"Wasajja",enteredDate:new Date().toLocaleString()},
     {id:"a2",serviceNo:"UG/2019/012",fullName:"2Lt Namukasa Grace",rank:"2Lt",commissionDate:"2022-07-20",remarks:"",enteredBy:"Wasajja",enteredDate:new Date().toLocaleString()},
     {id:"a3",serviceNo:"UG/2017/045",fullName:"Capt Kato Samuel",rank:"Capt",commissionDate:"2020-05-10",remarks:"Now serving at HQ",enteredBy:"Wasajja",enteredDate:new Date().toLocaleString()}
-  ];
-  saveAlumniData(sampleAlumni);
+  ]);
 }
 
 function initApp() {
   loadSampleData();
+  loadTheme();
   updateStats();
   renderSubjects();
   populateSubjectSelect();
@@ -233,15 +263,8 @@ function showTab(id) {
     document.getElementById("categoryDetail").classList.add("hidden");
   }
   if (id === "subjects") renderSubjects();
-  if (id === "scores") {
-    renderScores();
-    populateSubjectSelect();
-    populateCadetLists();
-  }
-  if (id === "exercises") {
-    renderExercises();
-    populateCadetLists();
-  }
+  if (id === "scores") { renderScores(); populateSubjectSelect(); populateCadetLists(); }
+  if (id === "exercises") { renderExercises(); populateCadetLists(); }
   if (id === "alumni") renderAlumni();
   if (id === "updates") renderAdminUpdates();
 }
@@ -250,26 +273,24 @@ function updateStats() {
   document.getElementById("statCadets").textContent = getCadets().length;
   document.getElementById("statSubjects").textContent = getSubjects().length;
   document.getElementById("statExercises").textContent = getExercises().length;
-  if (document.getElementById("statAlumni")) {
-    document.getElementById("statAlumni").textContent = getAlumni().length;
-  }
+  if (document.getElementById("statAlumni")) document.getElementById("statAlumni").textContent = getAlumni().length;
 }
 
-/* ==================== OFFICER ANIMATION (SLOW - 4.5 seconds) ==================== */
+/* ==================== OFFICER ANIMATION ==================== */
 function startOfficerAnimation() {
-  const officers = ["cmdt", "ci", "admin", "cc", "io", "pc", "asm", "fin"];
+  const officers = ["cmdt","ci","admin","cc","io","pc","asm","fin"];
   let delay = 0;
   const showTime = 4500;
 
-  officers.forEach(function (id, index) {
-    setTimeout(function () {
-      if (index > 0) document.getElementById(officers[index - 1]).classList.remove("show");
+  officers.forEach(function(id, index) {
+    setTimeout(function() {
+      if (index > 0) document.getElementById(officers[index-1]).classList.remove("show");
       document.getElementById(id).classList.add("show");
     }, delay);
     delay += showTime;
   });
 
-  setTimeout(function () {
+  setTimeout(function() {
     document.getElementById("fin").classList.remove("show");
     document.getElementById("coreValues").classList.add("show");
   }, delay + 800);
@@ -287,8 +308,7 @@ function openCategory(cat) {
   currentCadetIndex = 0;
   document.getElementById("categoryView").classList.add("hidden");
   document.getElementById("categoryDetail").classList.remove("hidden");
-  const title = cat === "Professional" ? "Professionals (Short Cadet Course)" : "Year " + cat + " Cadets";
-  document.getElementById("categoryTitle").textContent = title;
+  document.getElementById("categoryTitle").textContent = cat === "Professional" ? "Professionals (Short Cadet Course)" : "Year " + cat + " Cadets";
   hideAddForm();
   renderCategoryCadets();
 }
@@ -301,11 +321,9 @@ function backToCategories() {
 function getCategoryCadets() {
   const all = getCadets();
   if (currentCategory === "Professional") {
-    return all.filter(function (c) {
-      return c.courseCategory === "Professional Short Cadet Course" || c.year === "Professional";
-    });
+    return all.filter(function(c) { return c.courseCategory === "Professional Short Cadet Course" || c.year === "Professional"; });
   }
-  return all.filter(function (c) { return c.year === currentCategory; });
+  return all.filter(function(c) { return c.year === currentCategory; });
 }
 
 function renderCategoryCadets() {
@@ -371,7 +389,6 @@ function loadCadetToForm(c) {
   document.getElementById("pcRank").value = c.pcRank || "";
   document.getElementById("pcName").value = c.pcName || "";
   document.getElementById("intake").value = c.intake || "06";
-
   if (c.photo) {
     currentPhoto = c.photo;
     document.getElementById("photoPreview").src = c.photo;
@@ -387,7 +404,7 @@ function previewPhoto(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function (ev) {
+  reader.onload = function(ev) {
     currentPhoto = ev.target.result;
     document.getElementById("photoPreview").src = currentPhoto;
     document.getElementById("photoPreview").style.display = "block";
@@ -401,7 +418,7 @@ function clearPhoto() {
   document.getElementById("photoPreview").src = "";
   document.getElementById("photoPreview").style.display = "none";
   document.getElementById("photoPlaceholder").style.display = "block";
-  document.getElementById("photoInput").value = "";
+  if (document.getElementById("photoInput")) document.getElementById("photoInput").value = "";
 }
 
 function saveCadet(e) {
@@ -409,8 +426,7 @@ function saveCadet(e) {
   const id = document.getElementById("cadetId").value;
   const courseCat = currentCategory === "Professional" ? "Professional Short Cadet Course" : "Bachelor of Defense Studies (3 Years)";
   const yearVal = currentCategory === "Professional" ? "Professional" : currentCategory;
-
-  const existing = id ? getCadets().find(function (x) { return x.id === id; }) : null;
+  const existing = id ? getCadets().find(function(x){return x.id===id;}) : null;
 
   const cadet = {
     id: id || Date.now().toString(),
@@ -447,10 +463,7 @@ function saveCadet(e) {
 
   if (id) {
     for (let i = 0; i < cadets.length; i++) {
-      if (cadets[i].id === id) {
-        cadets[i] = cadet;
-        break;
-      }
+      if (cadets[i].id === id) { cadets[i] = cadet; break; }
     }
   } else {
     cadets.push(cadet);
@@ -468,10 +481,7 @@ function editCadet(id) {
   const cadets = getCadets();
   let c = null;
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].id === id) {
-      c = cadets[i];
-      break;
-    }
+    if (cadets[i].id === id) { c = cadets[i]; break; }
   }
   if (!c) return;
   c.lastAccessedBy = currentUser;
@@ -491,8 +501,8 @@ function deleteCadet(id) {
   }
   saveCadets(newList);
   if (sn) {
-    saveScores(getScores().filter(function (s) { return s.serviceNo !== sn; }));
-    saveExercises(getExercises().filter(function (e) { return e.serviceNo !== sn; }));
+    saveScores(getScores().filter(function(s){return s.serviceNo !== sn;}));
+    saveExercises(getExercises().filter(function(e){return e.serviceNo !== sn;}));
   }
   renderCategoryCadets();
   updateStats();
@@ -513,7 +523,6 @@ function saveSubject(e) {
   const name = document.getElementById("subjectName").value.trim();
   const id = document.getElementById("subjectId").value;
   const subjects = getSubjects();
-
   if (id !== "") {
     subjects[parseInt(id)] = name;
   } else {
@@ -557,9 +566,9 @@ function renderSubjects() {
   const subjects = getSubjects();
   let html = "";
   for (let i = 0; i < subjects.length; i++) {
-    html += "<tr><td>" + (i + 1) + "</td><td>" + subjects[i] + "</td>";
-    html += "<td><button class='btn btn-primary' onclick='editSubject(" + i + ")'>Edit</button> ";
-    html += "<button class='btn btn-danger' onclick='deleteSubject(" + i + ")'>Delete</button></td></tr>";
+    html += "<tr><td>" + (i+1) + "</td><td>" + subjects[i] + "</td>";
+    html += "<td><button class='btn btn-primary' onclick='editSubject("+i+")'>Edit</button> ";
+    html += "<button class='btn btn-danger' onclick='deleteSubject("+i+")'>Delete</button></td></tr>";
   }
   document.getElementById("subjectTableBody").innerHTML = html || "<tr><td colspan='3'>No subjects</td></tr>";
 }
@@ -567,9 +576,7 @@ function renderSubjects() {
 function populateSubjectSelect() {
   const subjects = getSubjects();
   let html = "";
-  for (let i = 0; i < subjects.length; i++) {
-    html += "<option>" + subjects[i] + "</option>";
-  }
+  for (let i = 0; i < subjects.length; i++) html += "<option>" + subjects[i] + "</option>";
   document.getElementById("scoreSubject").innerHTML = html;
 }
 
@@ -609,20 +616,15 @@ function saveScore(e) {
     date: document.getElementById("scoreDate").value,
     remarks: document.getElementById("scoreRemarks").value
   };
-
   let found = false;
   const cadets = getCadets();
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].serviceNo === score.serviceNo) {
-      found = true;
-      break;
-    }
+    if (cadets[i].serviceNo === score.serviceNo) { found = true; break; }
   }
   if (!found) {
     showAlert("scoreAlert", "Service number not found!", "error");
     return;
   }
-
   const scores = getScores();
   scores.push(score);
   saveScores(scores);
@@ -634,7 +636,7 @@ function saveScore(e) {
 
 function deleteScore(id) {
   if (!confirm("Delete?")) return;
-  saveScores(getScores().filter(function (s) { return s.id !== id; }));
+  saveScores(getScores().filter(function(s){return s.id !== id;}));
   renderScores();
 }
 
@@ -642,7 +644,7 @@ function renderScores() {
   const filter = (document.getElementById("scoreFilter") ? document.getElementById("scoreFilter").value : "").toLowerCase();
   let list = getScores();
   if (filter) {
-    list = list.filter(function (s) {
+    list = list.filter(function(s) {
       return s.serviceNo.toLowerCase().indexOf(filter) !== -1 ||
              s.subject.toLowerCase().indexOf(filter) !== -1 ||
              (s.cadetName && s.cadetName.toLowerCase().indexOf(filter) !== -1);
@@ -651,10 +653,10 @@ function renderScores() {
   let html = "";
   for (let i = 0; i < list.length; i++) {
     const s = list[i];
-    html += "<tr><td>" + s.serviceNo + "</td><td>" + (s.cadetName || "-") + "</td>";
+    html += "<tr><td>" + s.serviceNo + "</td><td>" + (s.cadetName||"-") + "</td>";
     html += "<td>" + s.subject + "</td><td>" + s.examType + "</td>";
     html += "<td><strong>" + s.marks + "/" + s.max + "</strong></td>";
-    html += "<td>" + (s.date || "-") + "</td>";
+    html += "<td>" + (s.date||"-") + "</td>";
     html += "<td><button class='btn btn-danger' onclick=\"deleteScore('" + s.id + "')\">Delete</button></td></tr>";
   }
   document.getElementById("scoreTableBody").innerHTML = html || "<tr><td colspan='7'>No scores</td></tr>";
@@ -684,20 +686,15 @@ function saveExercise(e) {
     date: document.getElementById("exDate").value,
     remarks: document.getElementById("exRemarks").value
   };
-
   let found = false;
   const cadets = getCadets();
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].serviceNo === ex.serviceNo) {
-      found = true;
-      break;
-    }
+    if (cadets[i].serviceNo === ex.serviceNo) { found = true; break; }
   }
   if (!found) {
     showAlert("exerciseAlert", "Service number not found!", "error");
     return;
   }
-
   const list = getExercises();
   list.push(ex);
   saveExercises(list);
@@ -710,7 +707,7 @@ function saveExercise(e) {
 
 function deleteExercise(id) {
   if (!confirm("Delete?")) return;
-  saveExercises(getExercises().filter(function (e) { return e.id !== id; }));
+  saveExercises(getExercises().filter(function(e){return e.id !== id;}));
   renderExercises();
   updateStats();
 }
@@ -720,9 +717,9 @@ function renderExercises() {
   let html = "";
   for (let i = 0; i < list.length; i++) {
     const e = list[i];
-    html += "<tr><td>" + e.serviceNo + "</td><td>" + (e.cadetName || "-") + "</td>";
+    html += "<tr><td>" + e.serviceNo + "</td><td>" + (e.cadetName||"-") + "</td>";
     html += "<td>" + e.name + "</td><td><strong>" + e.score + "</strong></td>";
-    html += "<td>" + (e.date || "-") + "</td>";
+    html += "<td>" + (e.date||"-") + "</td>";
     html += "<td><button class='btn btn-danger' onclick=\"deleteExercise('" + e.id + "')\">Delete</button></td></tr>";
   }
   document.getElementById("exerciseTableBody").innerHTML = html || "<tr><td colspan='6'>No exercises</td></tr>";
@@ -748,7 +745,6 @@ function resetAlumniForm() {
 function saveAlumni(e) {
   e.preventDefault();
   const id = document.getElementById("alumniId").value;
-
   const alumni = {
     id: id || Date.now().toString(),
     serviceNo: document.getElementById("alumniServiceNo").value.trim().toUpperCase(),
@@ -759,26 +755,20 @@ function saveAlumni(e) {
     enteredBy: currentUser,
     enteredDate: new Date().toLocaleString()
   };
-
   const list = getAlumni();
   for (let i = 0; i < list.length; i++) {
     if (list[i].serviceNo === alumni.serviceNo && list[i].id !== alumni.id) {
-      showAlert("alumniAlert", "Service number already exists in Alumni!", "error");
+      showAlert("alumniAlert", "Service number already exists!", "error");
       return;
     }
   }
-
   if (id) {
     for (let i = 0; i < list.length; i++) {
-      if (list[i].id === id) {
-        list[i] = alumni;
-        break;
-      }
+      if (list[i].id === id) { list[i] = alumni; break; }
     }
   } else {
     list.push(alumni);
   }
-
   saveAlumniData(list);
   showAlert("alumniAlert", "Alumni record saved!", "success");
   hideAlumniForm();
@@ -790,13 +780,9 @@ function editAlumni(id) {
   const list = getAlumni();
   let a = null;
   for (let i = 0; i < list.length; i++) {
-    if (list[i].id === id) {
-      a = list[i];
-      break;
-    }
+    if (list[i].id === id) { a = list[i]; break; }
   }
   if (!a) return;
-
   document.getElementById("alumniId").value = a.id;
   document.getElementById("alumniServiceNo").value = a.serviceNo;
   document.getElementById("alumniFullName").value = a.fullName;
@@ -809,7 +795,7 @@ function editAlumni(id) {
 
 function deleteAlumni(id) {
   if (!confirm("Delete this Alumni record?")) return;
-  saveAlumniData(getAlumni().filter(function (a) { return a.id !== id; }));
+  saveAlumniData(getAlumni().filter(function(a){return a.id !== id;}));
   renderAlumni();
   updateStats();
 }
@@ -832,12 +818,10 @@ function renderAlumni() {
   const filter = (document.getElementById("alumniSearch") ? document.getElementById("alumniSearch").value : "").toLowerCase();
   let list = getAlumni();
   if (filter) {
-    list = list.filter(function (a) {
-      return a.serviceNo.toLowerCase().indexOf(filter) !== -1 ||
-             a.fullName.toLowerCase().indexOf(filter) !== -1;
+    list = list.filter(function(a) {
+      return a.serviceNo.toLowerCase().indexOf(filter) !== -1 || a.fullName.toLowerCase().indexOf(filter) !== -1;
     });
   }
-
   let html = "";
   for (let i = 0; i < list.length; i++) {
     const a = list[i];
@@ -859,10 +843,7 @@ function printAlumni(id) {
   const list = getAlumni();
   let a = null;
   for (let i = 0; i < list.length; i++) {
-    if (list[i].id === id) {
-      a = list[i];
-      break;
-    }
+    if (list[i].id === id) { a = list[i]; break; }
   }
   if (!a) return;
 
@@ -875,47 +856,60 @@ function printAlumni(id) {
   html += "<h2>Alumni / Commissioned Officer Record</h2>";
   html += "<p style='font-size:1.15rem;font-weight:bold;margin-top:12px;color:#1a472a;'>" + destination + "</p>";
   html += "<p>Generated: " + new Date().toLocaleString() + "</p></div>";
-
-  html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
+  html += "<table style='width:100%;border-collapse:collapse;'>";
   html += "<tr><td style='padding:8px;width:35%;'><strong>Service Number</strong></td><td>" + a.serviceNo + "</td></tr>";
   html += "<tr><td style='padding:8px;'><strong>Full Name</strong></td><td>" + a.fullName + "</td></tr>";
   html += "<tr><td style='padding:8px;'><strong>Rank at Commission</strong></td><td>" + a.rank + "</td></tr>";
-  html += "<tr><td style='padding:8px;'><strong>Date of Commission</strong></td><td>" + (a.commissionDate || "-") + "</td></tr>";
-  html += "<tr><td style='padding:8px;'><strong>Remarks</strong></td><td>" + (a.remarks || "-") + "</td></tr>";
-  html += "<tr><td style='padding:8px;'><strong>Recorded By</strong></td><td>" + (a.enteredBy || "-") + " on " + (a.enteredDate || "-") + "</td></tr>";
+  html += "<tr><td style='padding:8px;'><strong>Date of Commission</strong></td><td>" + (a.commissionDate||"-") + "</td></tr>";
+  html += "<tr><td style='padding:8px;'><strong>Remarks</strong></td><td>" + (a.remarks||"-") + "</td></tr>";
+  html += "<tr><td style='padding:8px;'><strong>Recorded By</strong></td><td>" + (a.enteredBy||"-") + " on " + (a.enteredDate||"-") + "</td></tr>";
   html += "</table>";
   html += "<p style='margin-top:40px;text-align:center;color:#666;font-size:0.85rem;'>— End of Alumni Record — Made by 2Lt Herbert Wasajja for UMAK only —</p></div>";
 
   const printDiv = document.getElementById("printArea");
   printDiv.innerHTML = html;
   printDiv.classList.remove("hidden");
-
-  setTimeout(function () {
+  setTimeout(function() {
     window.print();
-    setTimeout(function () {
-      printDiv.classList.add("hidden");
-    }, 1000);
+    setTimeout(function() { printDiv.classList.add("hidden"); }, 1000);
   }, 300);
 }
 
-/* ==================== UPDATES ==================== */
+/* ==================== UPDATES (Text + Photo) ==================== */
 function saveUpdate(e) {
   e.preventDefault();
   const title = document.getElementById("updateTitle").value.trim();
   const message = document.getElementById("updateMessage").value.trim();
   if (!title || !message) return;
 
+  const fileInput = document.getElementById("updatePhoto");
+  const file = fileInput.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      finishSaveUpdate(title, message, ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    finishSaveUpdate(title, message, "");
+  }
+}
+
+function finishSaveUpdate(title, message, photo) {
   const updates = getUpdates();
   updates.unshift({
     id: Date.now().toString(),
     title: title,
     message: message,
+    photo: photo,
     date: new Date().toLocaleString(),
     by: currentUser
   });
   saveUpdates(updates);
   document.getElementById("updateTitle").value = "";
   document.getElementById("updateMessage").value = "";
+  document.getElementById("updatePhoto").value = "";
   showAlert("updateAlert", "Update posted successfully!", "success");
   renderAdminUpdates();
 }
@@ -931,6 +925,7 @@ function renderAdminUpdates() {
       html += "<h4>" + updates[i].title + "</h4>";
       html += "<div class='date'>" + updates[i].date + " | by " + updates[i].by + "</div>";
       html += "<p style='margin-top:8px;'>" + updates[i].message + "</p>";
+      if (updates[i].photo) html += "<img src='" + updates[i].photo + "' alt='Update photo'>";
       html += "<button class='btn btn-danger' style='margin-top:8px;' onclick=\"deleteUpdate('" + updates[i].id + "')\">Delete</button>";
       html += "</div>";
     }
@@ -949,6 +944,7 @@ function renderStudentUpdates() {
       html += "<h4>" + updates[i].title + "</h4>";
       html += "<div class='date'>" + updates[i].date + "</div>";
       html += "<p style='margin-top:8px;'>" + updates[i].message + "</p>";
+      if (updates[i].photo) html += "<img src='" + updates[i].photo + "' alt='Update photo'>";
       html += "</div>";
     }
   }
@@ -957,13 +953,13 @@ function renderStudentUpdates() {
 
 function deleteUpdate(id) {
   if (!confirm("Delete this update?")) return;
-  saveUpdates(getUpdates().filter(function (u) { return u.id !== id; }));
+  saveUpdates(getUpdates().filter(function(u){return u.id !== id;}));
   renderAdminUpdates();
 }
 
 /* ==================== STUDENT DATA ==================== */
 function loadStudentData(sn) {
-  const scores = getScores().filter(function (s) { return s.serviceNo === sn; });
+  const scores = getScores().filter(function(s){return s.serviceNo === sn;});
   let html = "";
   if (scores.length === 0) {
     html = "<p>No academic scores recorded yet.</p>";
@@ -972,13 +968,13 @@ function loadStudentData(sn) {
     for (let i = 0; i < scores.length; i++) {
       html += "<tr><td>" + scores[i].subject + "</td><td>" + scores[i].examType + "</td>";
       html += "<td><strong>" + scores[i].marks + "/" + scores[i].max + "</strong></td>";
-      html += "<td>" + (scores[i].date || "-") + "</td><td>" + (scores[i].remarks || "-") + "</td></tr>";
+      html += "<td>" + (scores[i].date||"-") + "</td><td>" + (scores[i].remarks||"-") + "</td></tr>";
     }
     html += "</tbody></table>";
   }
   document.getElementById("studentScores").innerHTML = html;
 
-  const exercises = getExercises().filter(function (e) { return e.serviceNo === sn; });
+  const exercises = getExercises().filter(function(e){return e.serviceNo === sn;});
   html = "";
   if (exercises.length === 0) {
     html = "<p>No field exercises recorded yet.</p>";
@@ -986,12 +982,11 @@ function loadStudentData(sn) {
     html = "<table><thead><tr><th>Exercise</th><th>Score</th><th>Date</th><th>Remarks</th></tr></thead><tbody>";
     for (let i = 0; i < exercises.length; i++) {
       html += "<tr><td>" + exercises[i].name + "</td><td><strong>" + exercises[i].score + "</strong></td>";
-      html += "<td>" + (exercises[i].date || "-") + "</td><td>" + (exercises[i].remarks || "-") + "</td></tr>";
+      html += "<td>" + (exercises[i].date||"-") + "</td><td>" + (exercises[i].remarks||"-") + "</td></tr>";
     }
     html += "</tbody></table>";
   }
   document.getElementById("studentExercises").innerHTML = html;
-
   renderStudentUpdates();
 }
 
@@ -1001,73 +996,60 @@ function searchCadet() {
   const cadets = getCadets();
   let c = null;
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].serviceNo === sn) {
-      c = cadets[i];
-      break;
-    }
+    if (cadets[i].serviceNo === sn) { c = cadets[i]; break; }
   }
-
   const result = document.getElementById("searchResult");
   if (!c) {
     result.innerHTML = "<div class='alert alert-error'>No cadet found with that Service Number.</div>";
     return;
   }
-
   c.lastAccessedBy = currentUser;
   saveCadets(cadets);
 
-  const scores = getScores().filter(function (s) { return s.serviceNo === sn; });
-  const exercises = getExercises().filter(function (e) { return e.serviceNo === sn; });
+  const scores = getScores().filter(function(s){return s.serviceNo === sn;});
+  const exercises = getExercises().filter(function(e){return e.serviceNo === sn;});
 
   let html = "<div class='card' style='border:2px solid #1a472a;'>";
   html += "<div style='display:flex;gap:20px;margin-bottom:15px;'>";
   if (c.photo) html += "<img src='" + c.photo + "' style='width:100px;height:120px;object-fit:cover;border-radius:6px;'>";
   html += "<div><h2 style='margin:0;'>" + c.fullName + "</h2>";
-  html += "<p><strong>" + c.serviceNo + "</strong> | " + (c.courseCategory || "-") + "</p>";
-  html += "<p>Year: " + (c.year || "-") + " | Company: " + (c.company || "-") + "</p></div></div>";
-
+  html += "<p><strong>" + c.serviceNo + "</strong> | " + (c.courseCategory||"-") + "</p>";
+  html += "<p>Year: " + (c.year||"-") + " | Company: " + (c.company||"-") + "</p></div></div>";
   html += "<div class='form-grid'>";
-  html += "<div><strong>Sex / Age / DOB:</strong> " + c.sex + " / " + (c.age || "-") + " / " + (c.dob || "-") + "</div>";
-  html += "<div><strong>Education:</strong> " + (c.education || "-") + "</div>";
-  html += "<div><strong>Next of Kin:</strong> " + (c.nextOfKin || "-") + "</div>";
-  html += "<div><strong>Platoon / Section:</strong> " + (c.platoon || "-") + " / " + (c.section || "-") + "</div>";
-  html += "<div><strong>Platoon Commander:</strong> " + (c.pcRank || "") + " " + (c.pcName || "-") + "</div>";
+  html += "<div><strong>Sex / Age / DOB:</strong> " + c.sex + " / " + (c.age||"-") + " / " + (c.dob||"-") + "</div>";
+  html += "<div><strong>Education:</strong> " + (c.education||"-") + "</div>";
+  html += "<div><strong>Next of Kin:</strong> " + (c.nextOfKin||"-") + "</div>";
+  html += "<div><strong>Platoon / Section:</strong> " + (c.platoon||"-") + " / " + (c.section||"-") + "</div>";
+  html += "<div><strong>Platoon Commander:</strong> " + (c.pcRank||"") + " " + (c.pcName||"-") + "</div>";
   html += "</div>";
-
-  html += "<div class='audit-info'>";
-  html += "<strong>Audit Information</strong><br>";
-  html += "Entered by: <strong>" + (c.enteredBy || "-") + "</strong> on " + (c.enteredDate || "-") + "<br>";
-  html += "Last accessed by: <strong>" + (c.lastAccessedBy || "-") + "</strong><br>";
-  html += "Printed by: <strong>" + (c.printedBy || "Not yet printed") + "</strong>";
-  html += "</div>";
-
+  html += "<div class='audit-info'><strong>Audit Information</strong><br>";
+  html += "Entered by: <strong>" + (c.enteredBy||"-") + "</strong> on " + (c.enteredDate||"-") + "<br>";
+  html += "Last accessed by: <strong>" + (c.lastAccessedBy||"-") + "</strong><br>";
+  html += "Printed by: <strong>" + (c.printedBy||"Not yet printed") + "</strong></div>";
   html += "<h3>Academic Scores</h3><table><thead><tr><th>Subject</th><th>Exam Type</th><th>Score</th><th>Date</th></tr></thead><tbody>";
   if (scores.length === 0) html += "<tr><td colspan='4'>No scores recorded</td></tr>";
   else {
     for (let i = 0; i < scores.length; i++) {
       html += "<tr><td>" + scores[i].subject + "</td><td>" + scores[i].examType + "</td>";
-      html += "<td>" + scores[i].marks + "/" + scores[i].max + "</td><td>" + (scores[i].date || "-") + "</td></tr>";
+      html += "<td>" + scores[i].marks + "/" + scores[i].max + "</td><td>" + (scores[i].date||"-") + "</td></tr>";
     }
   }
   html += "</tbody></table>";
-
   html += "<h3>Field Exercises</h3><table><thead><tr><th>Exercise</th><th>Score</th><th>Date</th><th>Remarks</th></tr></thead><tbody>";
   if (exercises.length === 0) html += "<tr><td colspan='4'>No field exercises</td></tr>";
   else {
     for (let i = 0; i < exercises.length; i++) {
       html += "<tr><td>" + exercises[i].name + "</td><td>" + exercises[i].score + "</td>";
-      html += "<td>" + (exercises[i].date || "-") + "</td><td>" + (exercises[i].remarks || "-") + "</td></tr>";
+      html += "<td>" + (exercises[i].date||"-") + "</td><td>" + (exercises[i].remarks||"-") + "</td></tr>";
     }
   }
   html += "</tbody></table>";
-
   html += "<br><button class='btn btn-success' onclick=\"printCadet('" + sn + "')\">Print Full Record</button> ";
-  html += "<button class='btn btn-primary' onclick=\"exportSingleCadet('" + sn + "')\">Export this Cadet to Excel</button>";
-  html += "</div>";
+  html += "<button class='btn btn-primary' onclick=\"exportSingleCadet('" + sn + "')\">Export this Cadet to Excel</button></div>";
   result.innerHTML = html;
 }
 
-/* ==================== PRINT CADET (FULLY WORKING) ==================== */
+/* ==================== PRINT CADET (FULL INFO ON PAPER) ==================== */
 function printCadet(sn) {
   const destination = prompt("Print destination (e.g. TO: CI, TO: Commandant, TO: Course Coordinator):", "TO: Chief Instructor (CI)");
   if (destination === null) return;
@@ -1075,22 +1057,16 @@ function printCadet(sn) {
   const cadets = getCadets();
   let c = null;
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].serviceNo === sn) {
-      c = cadets[i];
-      break;
-    }
+    if (cadets[i].serviceNo === sn) { c = cadets[i]; break; }
   }
-  if (!c) {
-    alert("Cadet not found");
-    return;
-  }
+  if (!c) { alert("Cadet not found"); return; }
 
   c.printedBy = currentUser + " on " + new Date().toLocaleString();
   c.lastAccessedBy = currentUser;
   saveCadets(cadets);
 
-  const scores = getScores().filter(function (s) { return s.serviceNo === sn; });
-  const exercises = getExercises().filter(function (e) { return e.serviceNo === sn; });
+  const scores = getScores().filter(function(s){return s.serviceNo === sn;});
+  const exercises = getExercises().filter(function(e){return e.serviceNo === sn;});
 
   let html = "<div style='font-family:Arial;max-width:800px;margin:0 auto;padding:20px;'>";
   html += "<div style='text-align:center;border-bottom:3px solid #1a472a;padding-bottom:15px;margin-bottom:20px;'>";
@@ -1103,24 +1079,24 @@ function printCadet(sn) {
   if (c.photo) html += "<img src='" + c.photo + "' style='width:120px;height:140px;object-fit:cover;border:1px solid #ccc;'>";
   html += "<div><h2 style='margin:0;'>" + c.fullName + "</h2>";
   html += "<p><strong>Service No:</strong> " + c.serviceNo + "<br>";
-  html += "<strong>Course:</strong> " + (c.courseCategory || "-") + "<br>";
-  html += "<strong>Year:</strong> " + (c.year || "-") + " | <strong>Rank:</strong> " + c.rank + "</p></div></div>";
+  html += "<strong>Course:</strong> " + (c.courseCategory||"-") + "<br>";
+  html += "<strong>Year:</strong> " + (c.year||"-") + " | <strong>Rank:</strong> " + c.rank + "</p></div></div>";
 
   html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Personal & Unit Information</h3>";
   html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
-  html += "<tr><td style='padding:6px;width:30%;'><strong>Sex / Age / DOB</strong></td><td>" + c.sex + " / " + (c.age || "-") + " / " + (c.dob || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Education</strong></td><td>" + (c.education || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Next of Kin</strong></td><td>" + (c.nextOfKin || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Company</strong></td><td>" + (c.company || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Platoon / Section</strong></td><td>" + (c.platoon || "-") + " / " + (c.section || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Platoon Commander</strong></td><td>" + (c.pcRank || "") + " " + (c.pcName || "-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;width:30%;'><strong>Sex / Age / DOB</strong></td><td>" + c.sex + " / " + (c.age||"-") + " / " + (c.dob||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Education</strong></td><td>" + (c.education||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Next of Kin</strong></td><td>" + (c.nextOfKin||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Company</strong></td><td>" + (c.company||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Platoon / Section</strong></td><td>" + (c.platoon||"-") + " / " + (c.section||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Platoon Commander</strong></td><td>" + (c.pcRank||"") + " " + (c.pcName||"-") + "</td></tr>";
   html += "</table>";
 
   html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Audit Trail</h3>";
   html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
-  html += "<tr><td style='padding:6px;width:30%;'><strong>Entered By</strong></td><td>" + (c.enteredBy || "-") + " on " + (c.enteredDate || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Last Accessed By</strong></td><td>" + (c.lastAccessedBy || "-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Printed By</strong></td><td>" + (c.printedBy || "-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;width:30%;'><strong>Entered By</strong></td><td>" + (c.enteredBy||"-") + " on " + (c.enteredDate||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Last Accessed By</strong></td><td>" + (c.lastAccessedBy||"-") + "</td></tr>";
+  html += "<tr><td style='padding:6px;'><strong>Printed By</strong></td><td>" + (c.printedBy||"-") + "</td></tr>";
   html += "</table>";
 
   html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Academic Scores</h3>";
@@ -1132,7 +1108,7 @@ function printCadet(sn) {
       html += "<tr><td style='padding:6px;border-bottom:1px solid #ddd;'>" + scores[i].subject + "</td>";
       html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + scores[i].examType + "</td>";
       html += "<td style='padding:6px;border-bottom:1px solid #ddd;'><strong>" + scores[i].marks + "/" + scores[i].max + "</strong></td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (scores[i].date || "-") + "</td></tr>";
+      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (scores[i].date||"-") + "</td></tr>";
     }
   }
   html += "</tbody></table>";
@@ -1145,8 +1121,8 @@ function printCadet(sn) {
     for (let i = 0; i < exercises.length; i++) {
       html += "<tr><td style='padding:6px;border-bottom:1px solid #ddd;'>" + exercises[i].name + "</td>";
       html += "<td style='padding:6px;border-bottom:1px solid #ddd;'><strong>" + exercises[i].score + "</strong></td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].date || "-") + "</td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].remarks || "-") + "</td></tr>";
+      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].date||"-") + "</td>";
+      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].remarks||"-") + "</td></tr>";
     }
   }
   html += "</tbody></table>";
@@ -1155,12 +1131,9 @@ function printCadet(sn) {
   const printDiv = document.getElementById("printArea");
   printDiv.innerHTML = html;
   printDiv.classList.remove("hidden");
-
-  setTimeout(function () {
+  setTimeout(function() {
     window.print();
-    setTimeout(function () {
-      printDiv.classList.add("hidden");
-    }, 1000);
+    setTimeout(function() { printDiv.classList.add("hidden"); }, 1000);
   }, 300);
 }
 
@@ -1169,26 +1142,11 @@ function exportSingleCadet(sn) {
   const cadets = getCadets();
   let c = null;
   for (let i = 0; i < cadets.length; i++) {
-    if (cadets[i].serviceNo === sn) {
-      c = cadets[i];
-      break;
-    }
+    if (cadets[i].serviceNo === sn) { c = cadets[i]; break; }
   }
   if (!c) return;
-
-  let csv = "Field,Value\n";
-  csv += "Service No," + c.serviceNo + "\n";
-  csv += "Full Name," + c.fullName + "\n";
-  csv += "Course Category," + (c.courseCategory || "") + "\n";
-  csv += "Year," + (c.year || "") + "\n";
-  csv += "Sex," + c.sex + "\n";
-  csv += "Company," + (c.company || "") + "\n";
-  csv += "Entered By," + (c.enteredBy || "") + "\n";
-  csv += "Entered Date," + (c.enteredDate || "") + "\n";
-  csv += "Last Accessed By," + (c.lastAccessedBy || "") + "\n";
-  csv += "Printed By," + (c.printedBy || "") + "\n";
-
-  const blob = new Blob([csv], { type: "text/csv" });
+  let csv = "Field,Value\nService No," + c.serviceNo + "\nFull Name," + c.fullName + "\nCourse Category," + (c.courseCategory||"") + "\nYear," + (c.year||"") + "\nSex," + c.sex + "\nCompany," + (c.company||"") + "\nEntered By," + (c.enteredBy||"") + "\n";
+  const blob = new Blob([csv], {type:"text/csv"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "Cadet_" + c.serviceNo + ".csv";
@@ -1200,12 +1158,12 @@ function exportData() {
   let csv = "Course Category,Year,Service No,Full Name,Rank,Sex,Company,Entered By,Entered Date,Last Accessed By,Printed By\n";
   for (let i = 0; i < cadets.length; i++) {
     const c = cadets[i];
-    csv += '"' + (c.courseCategory || "") + '","' + (c.year || "") + '","' + c.serviceNo + '","' + c.fullName + '","' + c.rank + '","' + c.sex + '","' + (c.company || "") + '","' + (c.enteredBy || "") + '","' + (c.enteredDate || "") + '","' + (c.lastAccessedBy || "") + '","' + (c.printedBy || "") + '"\n';
+    csv += '"' + (c.courseCategory||"") + '","' + (c.year||"") + '","' + c.serviceNo + '","' + c.fullName + '","' + c.rank + '","' + c.sex + '","' + (c.company||"") + '","' + (c.enteredBy||"") + '","' + (c.enteredDate||"") + '","' + (c.lastAccessedBy||"") + '","' + (c.printedBy||"") + '"\n';
   }
-  const blob = new Blob([csv], { type: "text/csv" });
+  const blob = new Blob([csv], {type:"text/csv"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "UMA_Cadets_" + new Date().toISOString().slice(0, 10) + ".csv";
+  a.download = "UMA_Cadets_" + new Date().toISOString().slice(0,10) + ".csv";
   a.click();
 }
 
@@ -1214,12 +1172,12 @@ function exportAlumni() {
   let csv = "Service No,Full Name,Rank,Date of Commission,Remarks,Entered By,Entered Date\n";
   for (let i = 0; i < list.length; i++) {
     const a = list[i];
-    csv += '"' + a.serviceNo + '","' + a.fullName + '","' + a.rank + '","' + (a.commissionDate || "") + '","' + (a.remarks || "") + '","' + (a.enteredBy || "") + '","' + (a.enteredDate || "") + '"\n';
+    csv += '"' + a.serviceNo + '","' + a.fullName + '","' + a.rank + '","' + (a.commissionDate||"") + '","' + (a.remarks||"") + '","' + (a.enteredBy||"") + '","' + (a.enteredDate||"") + '"\n';
   }
-  const blob = new Blob([csv], { type: "text/csv" });
+  const blob = new Blob([csv], {type:"text/csv"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "UMA_Alumni_" + new Date().toISOString().slice(0, 10) + ".csv";
+  a.download = "UMA_Alumni_" + new Date().toISOString().slice(0,10) + ".csv";
   a.click();
 }
 
@@ -1240,14 +1198,16 @@ function showAlert(id, msg, type) {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = "<div class='alert alert-" + type + "'>" + msg + "</div>";
-  setTimeout(function () { el.innerHTML = ""; }, 4000);
+  setTimeout(function(){ el.innerHTML = ""; }, 4000);
 }
 
 /* ==================== EVENT LISTENERS ==================== */
-document.getElementById("loginPass").onkeypress = function (e) {
+document.getElementById("loginPass").onkeypress = function(e) {
   if (e.key === "Enter" || e.keyCode === 13) doAdminLogin();
 };
-
-document.getElementById("stuPass").onkeypress = function (e) {
+document.getElementById("stuPass").onkeypress = function(e) {
   if (e.key === "Enter" || e.keyCode === 13) doStudentLogin();
 };
+
+// Load theme on page load
+loadTheme();
