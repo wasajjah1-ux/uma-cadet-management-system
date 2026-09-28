@@ -1,6 +1,6 @@
 /* ============================================
    UMA Kabamba – Cadet Management System
-   Complete JavaScript (Final Version)
+   Complete JavaScript (Final Working Version)
    ============================================ */
 
 const DEFAULT_USER = "Wasajja";
@@ -12,7 +12,6 @@ let currentCadetIndex = 0;
 let currentAlumniIndex = 0;
 let currentUser = DEFAULT_USER;
 let currentStudentSN = "";
-let updatePhotoData = "";
 
 /* ==================== LOGIN ==================== */
 function switchLogin(type) {
@@ -871,8 +870,8 @@ function printAlumni(id) {
   printDiv.classList.remove("hidden");
   setTimeout(function() {
     window.print();
-    setTimeout(function() { printDiv.classList.add("hidden"); }, 1000);
-  }, 300);
+    setTimeout(function() { printDiv.classList.add("hidden"); }, 1500);
+  }, 500);
 }
 
 /* ==================== UPDATES (Text + Photo) ==================== */
@@ -1049,7 +1048,7 @@ function searchCadet() {
   result.innerHTML = html;
 }
 
-/* ==================== PRINT CADET (FULL INFO ON PAPER) ==================== */
+/* ==================== PRINT CADET (FULLY WORKING) ==================== */
 function printCadet(sn) {
   const destination = prompt("Print destination (e.g. TO: CI, TO: Commandant, TO: Course Coordinator):", "TO: Chief Instructor (CI)");
   if (destination === null) return;
@@ -1068,73 +1067,122 @@ function printCadet(sn) {
   const scores = getScores().filter(function(s){return s.serviceNo === sn;});
   const exercises = getExercises().filter(function(e){return e.serviceNo === sn;});
 
-  let html = "<div style='font-family:Arial;max-width:800px;margin:0 auto;padding:20px;'>";
-  html += "<div style='text-align:center;border-bottom:3px solid #1a472a;padding-bottom:15px;margin-bottom:20px;'>";
-  html += "<h1 style='color:#1a472a;margin:0;'>UGANDA MILITARY ACADEMY – KABAMBA</h1>";
-  html += "<h2>Officer Cadet Full Record</h2>";
-  html += "<p style='font-size:1.15rem;font-weight:bold;margin-top:12px;color:#1a472a;'>" + destination + "</p>";
-  html += "<p>Generated: " + new Date().toLocaleString() + "</p></div>";
+  let html = `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #000;">
+      <div style="text-align: center; border-bottom: 3px solid #1a472a; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="color: #1a472a; margin: 0; font-size: 22px;">UGANDA MILITARY ACADEMY – KABAMBA</h1>
+        <h2 style="margin: 8px 0;">Officer Cadet Full Record</h2>
+        <p style="font-size: 16px; font-weight: bold; margin-top: 12px; color: #1a472a;">${destination}</p>
+        <p style="font-size: 13px;">Generated: ${new Date().toLocaleString()}</p>
+      </div>
 
-  html += "<div style='display:flex;gap:20px;margin-bottom:20px;'>";
-  if (c.photo) html += "<img src='" + c.photo + "' style='width:120px;height:140px;object-fit:cover;border:1px solid #ccc;'>";
-  html += "<div><h2 style='margin:0;'>" + c.fullName + "</h2>";
-  html += "<p><strong>Service No:</strong> " + c.serviceNo + "<br>";
-  html += "<strong>Course:</strong> " + (c.courseCategory||"-") + "<br>";
-  html += "<strong>Year:</strong> " + (c.year||"-") + " | <strong>Rank:</strong> " + c.rank + "</p></div></div>";
+      <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start;">
+        \( {c.photo ? `<img src=" \){c.photo}" style="width: 120px; height: 140px; object-fit: cover; border: 1px solid #ccc;">` : ""}
+        <div>
+          <h2 style="margin: 0 0 8px 0;">${c.fullName}</h2>
+          <p style="margin: 4px 0;"><strong>Service No:</strong> ${c.serviceNo}</p>
+          <p style="margin: 4px 0;"><strong>Course:</strong> ${c.courseCategory || "-"}</p>
+          <p style="margin: 4px 0;"><strong>Year:</strong> ${c.year || "-"} | <strong>Rank:</strong> ${c.rank}</p>
+        </div>
+      </div>
 
-  html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Personal & Unit Information</h3>";
-  html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
-  html += "<tr><td style='padding:6px;width:30%;'><strong>Sex / Age / DOB</strong></td><td>" + c.sex + " / " + (c.age||"-") + " / " + (c.dob||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Education</strong></td><td>" + (c.education||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Next of Kin</strong></td><td>" + (c.nextOfKin||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Company</strong></td><td>" + (c.company||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Platoon / Section</strong></td><td>" + (c.platoon||"-") + " / " + (c.section||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Platoon Commander</strong></td><td>" + (c.pcRank||"") + " " + (c.pcName||"-") + "</td></tr>";
-  html += "</table>";
+      <h3 style="background: #1a472a; color: white; padding: 8px; margin: 20px 0 10px 0;">Personal & Unit Information</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr><td style="padding: 6px; width: 35%; border-bottom: 1px solid #ddd;"><strong>Sex / Age / DOB</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.sex} / ${c.age || "-"} / ${c.dob || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Education</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.education || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Next of Kin</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.nextOfKin || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Company</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.company || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Platoon / Section</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.platoon || "-"} / ${c.section || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Platoon Commander</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.pcRank || ""} ${c.pcName || "-"}</td></tr>
+      </table>
 
-  html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Audit Trail</h3>";
-  html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
-  html += "<tr><td style='padding:6px;width:30%;'><strong>Entered By</strong></td><td>" + (c.enteredBy||"-") + " on " + (c.enteredDate||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Last Accessed By</strong></td><td>" + (c.lastAccessedBy||"-") + "</td></tr>";
-  html += "<tr><td style='padding:6px;'><strong>Printed By</strong></td><td>" + (c.printedBy||"-") + "</td></tr>";
-  html += "</table>";
+      <h3 style="background: #1a472a; color: white; padding: 8px; margin: 20px 0 10px 0;">Audit Trail</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr><td style="padding: 6px; width: 35%; border-bottom: 1px solid #ddd;"><strong>Entered By</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.enteredBy || "-"} on ${c.enteredDate || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Last Accessed By</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.lastAccessedBy || "-"}</td></tr>
+        <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>Printed By</strong></td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${c.printedBy || "-"}</td></tr>
+      </table>
 
-  html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Academic Scores</h3>";
-  html += "<table style='width:100%;border-collapse:collapse;margin-bottom:20px;'>";
-  html += "<thead><tr style='background:#e8f0e8;'><th>Subject</th><th>Exam Type</th><th>Score</th><th>Date</th></tr></thead><tbody>";
-  if (scores.length === 0) html += "<tr><td colspan='4'>No scores recorded</td></tr>";
-  else {
+      <h3 style="background: #1a472a; color: white; padding: 8px; margin: 20px 0 10px 0;">Academic Scores</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #e8f0e8;">
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Subject</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Exam Type</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Score</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  if (scores.length === 0) {
+    html += `<tr><td colspan="4" style="padding: 8px;">No scores recorded</td></tr>`;
+  } else {
     for (let i = 0; i < scores.length; i++) {
-      html += "<tr><td style='padding:6px;border-bottom:1px solid #ddd;'>" + scores[i].subject + "</td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + scores[i].examType + "</td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'><strong>" + scores[i].marks + "/" + scores[i].max + "</strong></td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (scores[i].date||"-") + "</td></tr>";
+      html += `
+        <tr>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${scores[i].subject}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${scores[i].examType}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>\( {scores[i].marks}/ \){scores[i].max}</strong></td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${scores[i].date || "-"}</td>
+        </tr>
+      `;
     }
   }
-  html += "</tbody></table>";
 
-  html += "<h3 style='background:#1a472a;color:white;padding:8px;'>Field Exercises</h3>";
-  html += "<table style='width:100%;border-collapse:collapse;'>";
-  html += "<thead><tr style='background:#e8f0e8;'><th>Exercise</th><th>Score</th><th>Date</th><th>Remarks</th></tr></thead><tbody>";
-  if (exercises.length === 0) html += "<tr><td colspan='4'>No field exercises</td></tr>";
-  else {
+  html += `
+        </tbody>
+      </table>
+
+      <h3 style="background: #1a472a; color: white; padding: 8px; margin: 20px 0 10px 0;">Field Exercises</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #e8f0e8;">
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Exercise</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Score</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Date</th>
+            <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ccc;">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  if (exercises.length === 0) {
+    html += `<tr><td colspan="4" style="padding: 8px;">No field exercises</td></tr>`;
+  } else {
     for (let i = 0; i < exercises.length; i++) {
-      html += "<tr><td style='padding:6px;border-bottom:1px solid #ddd;'>" + exercises[i].name + "</td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'><strong>" + exercises[i].score + "</strong></td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].date||"-") + "</td>";
-      html += "<td style='padding:6px;border-bottom:1px solid #ddd;'>" + (exercises[i].remarks||"-") + "</td></tr>";
+      html += `
+        <tr>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${exercises[i].name}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;"><strong>${exercises[i].score}</strong></td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${exercises[i].date || "-"}</td>
+          <td style="padding: 6px; border-bottom: 1px solid #ddd;">${exercises[i].remarks || "-"}</td>
+        </tr>
+      `;
     }
   }
-  html += "</tbody></table>";
-  html += "<p style='margin-top:40px;text-align:center;color:#666;font-size:0.85rem;'>— End of Record — Made by 2Lt Herbert Wasajja for UMAK only —</p></div>";
+
+  html += `
+        </tbody>
+      </table>
+
+      <p style="margin-top: 40px; text-align: center; color: #666; font-size: 12px;">
+        — End of Record — Made by 2Lt Herbert Wasajja for UMAK only —
+      </p>
+    </div>
+  `;
 
   const printDiv = document.getElementById("printArea");
   printDiv.innerHTML = html;
   printDiv.classList.remove("hidden");
+
   setTimeout(function() {
     window.print();
-    setTimeout(function() { printDiv.classList.add("hidden"); }, 1000);
-  }, 300);
+    setTimeout(function() {
+      printDiv.classList.add("hidden");
+    }, 1500);
+  }, 500);
 }
 
 /* ==================== EXPORT ==================== */
