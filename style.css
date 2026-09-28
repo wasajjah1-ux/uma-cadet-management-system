@@ -1,6 +1,6 @@
 /* ============================================
    UMA Kabamba – Cadet Management System
-   Complete Stylesheet
+   Complete Stylesheet (Final)
    ============================================ */
 
 :root {
@@ -9,7 +9,6 @@
   --accent: #c9a227;
   --danger: #b91c1c;
   --success: #15803d;
-  --light: #f0fdf4;
   --gray: #64748b;
 }
 
@@ -181,9 +180,9 @@ body {
   padding: 0 15px;
 }
 
-/* ==================== CARDS & COMMON ==================== */
+/* ==================== CARDS ==================== */
 .card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -195,6 +194,11 @@ body {
   margin-bottom: 15px;
   border-bottom: 2px solid var(--accent);
   padding-bottom: 8px;
+}
+
+.card h3 {
+  color: var(--primary);
+  margin: 20px 0 10px;
 }
 
 .hidden {
@@ -222,52 +226,52 @@ body {
 }
 
 .page-dashboard {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('dashboard-bg.jpg') center/cover no-repeat;
 }
 
 .page-cadets {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('cadets-bg.jpg') center/cover no-repeat;
 }
 
 .page-subjects {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('subjects-bg.jpg') center/cover no-repeat;
 }
 
 .page-scores {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('scores-bg.jpg') center/cover no-repeat;
 }
 
 .page-exercises {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('exercises-bg.jpg') center/cover no-repeat;
 }
 
 .page-alumni {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('alumni-bg.jpg') center/cover no-repeat;
 }
 
 .page-updates {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('updates-bg.jpg') center/cover no-repeat;
 }
 
 .page-search {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('search-bg.jpg') center/cover no-repeat;
 }
 
 .page-settings {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('settings-bg.jpg') center/cover no-repeat;
 }
 
 .page-student {
-  background: linear-gradient(rgba(232, 240, 232, 0.85), rgba(232, 240, 232, 0.9)),
+  background: linear-gradient(rgba(232, 240, 232, 0.88), rgba(232, 240, 232, 0.92)),
               url('student-bg.jpg') center/cover no-repeat;
 }
 
@@ -433,6 +437,7 @@ body {
 .category-card h3 {
   font-size: 1.4rem;
   margin-bottom: 8px;
+  color: white;
 }
 
 .category-header {
@@ -610,7 +615,7 @@ th {
   border-radius: 6px;
 }
 
-/* ==================== ALERTS & BADGES ==================== */
+/* ==================== ALERTS ==================== */
 .alert {
   padding: 12px 18px;
   border-radius: 6px;
@@ -665,17 +670,9 @@ th {
   text-align: center;
 }
 
-.stat-box.blue {
-  background: #dbeafe;
-}
-
-.stat-box.yellow {
-  background: #fef3c7;
-}
-
-.stat-box.green {
-  background: #dcfce7;
-}
+.stat-box.blue { background: #dbeafe; }
+.stat-box.yellow { background: #fef3c7; }
+.stat-box.green { background: #dcfce7; }
 
 .stat-number {
   font-size: 2rem;
@@ -687,7 +684,7 @@ th {
   background: #f0fdf4;
   border-left: 5px solid var(--primary);
   padding: 15px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   border-radius: 0 8px 8px 0;
 }
 
@@ -699,6 +696,33 @@ th {
 .update-card .date {
   font-size: 0.85rem;
   color: #666;
+}
+
+.update-card img {
+  max-width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  margin-top: 12px;
+  display: block;
+}
+
+/* ==================== SETTINGS ==================== */
+.contact-box {
+  background: #f0fdf4;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.contact-box a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.contact-box a:hover {
+  text-decoration: underline;
 }
 
 /* ==================== STUDENT ==================== */
@@ -738,6 +762,25 @@ th {
   .hidden {
     display: block !important;
   }
+}
+
+/* ==================== THEMES ==================== */
+body.theme-dark {
+  --primary: #111827;
+  --secondary: #1f2937;
+  --accent: #f59e0b;
+}
+
+body.theme-blue {
+  --primary: #1e3a5f;
+  --secondary: #2c5282;
+  --accent: #63b3ed;
+}
+
+body.theme-brown {
+  --primary: #5c3317;
+  --secondary: #7b4b2a;
+  --accent: #d4a017;
 }
 
 /* ==================== RESPONSIVE ==================== */
